@@ -64,10 +64,10 @@ public abstract class FormController extends AbstractController {
 
     protected Field createCsrfTokenField(String value) {
         return DefaultField.builder()
-                .setName(csrfTokenManager.getTokenName())
-                .setValue(value)
-                .setType("hidden")
-                .build();
+                       .setName(csrfTokenManager.getTokenName())
+                       .setValue(value)
+                       .setType("hidden")
+                       .build();
     }
 
     protected void setCsrfToken(HttpServletRequest request, HttpServletResponse response, Form form) throws IllegalArgumentException {
@@ -161,6 +161,12 @@ public abstract class FormController extends AbstractController {
                 } else {
                     clone.setValue(val);
                 }
+                //Issue 652 if JSON resolve the i18n keys for placeholder and label
+                if (isJsonPreferred(request)) {
+                    ((DefaultField) clone).setLabel(i18n(request, clone.getLabel()));
+                    ((DefaultField) clone).setPlaceholder(i18n(request, clone.getPlaceholder()));
+                }
+
                 fields.add(clone);
             }
         }
